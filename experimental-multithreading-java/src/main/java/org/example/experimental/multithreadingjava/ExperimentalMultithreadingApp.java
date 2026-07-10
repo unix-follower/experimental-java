@@ -1,0 +1,46 @@
+package org.example.experimental.multithreadingjava;
+
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+
+import java.util.concurrent.Callable;
+import java.util.logging.Logger;
+
+@Command(name = "multithreadingjava", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
+        description = "Execute various multithreading scenarios.")
+public class ExperimentalMultithreadingApp implements Callable<Integer> {
+    private static final String SERVICE_NAME = "experimental-multithreading-java";
+    private static final String SERVICE_VERSION = "1.0.0-SNAPSHOT";
+
+    private static final Logger LOGGER = Logger.getLogger(ExperimentalMultithreadingApp.class.getName());
+
+    @Option(names = {"-s", "--scenario"}, description = "The scenario name")
+    private String scenario = "default";
+
+    private final OpenTelemetrySupport telemetry;
+
+    public ExperimentalMultithreadingApp(OpenTelemetrySupport telemetry) {
+        this.telemetry = telemetry;
+    }
+
+    @Override
+    public Integer call() throws Exception {
+        if ("default".equals(scenario)) {
+            InstrumentedWorkload.WorkloadSummary summary = new InstrumentedWorkload(telemetry.openTelemetry()).run();
+            telemetry.flush();
+            LOGGER.info(String.format(
+                    "Submitted %d tasks, completed %d, failed %d.%n",
+                    summary.submitted(),
+                    summary.completed(),
+                    summary.failed()));
+        }
+        return 0;
+    }
+
+    static void main() {
+        try (OpenTelemetrySupport telemetry = OpenTelemetrySupport.initialize(SERVICE_NAME, SERVICE_VERSION)) {
+            new CommandLine(new ExperimentalMultithreadingApp(telemetry)).execute();
+        }
+    }
+}

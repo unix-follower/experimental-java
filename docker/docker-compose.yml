@@ -1,0 +1,105 @@
+volumes:
+  prometheus-data:
+  elastic-data:
+  splunk-etc:
+  splunk-var:
+
+networks:
+  local-bridge:
+    external: true
+
+services:
+  otel_collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
+    hostname: otel-collector
+    restart: "no"
+    networks:
+      local-bridge:
+        ipv4_address: 192.168.2.10
+    volumes:
+      - ./otel-collector.yaml:/etc/otelcol-contrib/config.yaml
+    ports:
+      - "4317:4317" # OTLP over gRPC, the default for most SDKs
+      - "4318:4318" # OTLP over HTTP, for clients that don’t support gRPC
+      - "55679:55679" # ZPages, a built-in debug UI you can open in the browser
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    hostname: prometheus
+    restart: "no"
+    ports:
+      - "9090:9090"
+    networks:
+      local-bridge:
+        ipv4_address: 192.168.2.8
+    volumes:
+      - prometheus-data:/prometheus
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.4.3
+    container_name: elasticsearch
+    hostname: elasticsearch
+    restart: "no"
+    environment:
+      - node.name=elasticsearch
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=elastic
+      - xpack.security.enabled=true
+      # - cluster.name=es-docker-cluster
+      # - discovery.seed_hosts=elasticsearch
+      # - cluster.initial_master_nodes=elasticsearch
+      # - bootstrap.memory_lock=true
+      # - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    # ulimits:
+    #   memlock:
+    #     soft: -1
+    #     hard: -1
+    volumes:
+      - elastic-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    networks:
+      local-bridge:
+        ipv4_address: 192.168.2.11
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:9.4.3
+    container_name: kibana
+    hostname: kibana
+    restart: "no"
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+#      ELASTICSEARCH_USERNAME: elastic
+#      ELASTICSEARCH_PASSWORD: elastic
+      ELASTICSEARCH_SERVICEACCOUNTTOKEN: AAEAAWVsYXN0aWMva2liYW5hL2tpYmFuYS10b2tlbjplU2xleW12QlJMQzR3SW9tRlBhU1Vn
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      local-bridge:
+        ipv4_address: 192.168.2.12
+
+  splunk:
+    image: splunk/splunk:latest
+    container_name: splunk
+    environment:
+      - SPLUNK_GENERAL_TERMS=--accept-sgt-current-at-splunk-com
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_LICENSE_URI=Free
+      - SPLUNK_PASSWORD=splunk_svc
+      - SPLUNK_HEC_TOKEN=11111111-1111-1111-1111-111111111111
+    networks:
+      local-bridge:
+        ipv4_address: 192.168.2.13
+    ports:
+      - "8000:8000"   # Web UI
+      - "8089:8089"   # Management API
+      - "9997:9997"   # Splunk Indexing (from Forwarders)
+      - "8088:8088"   # HTTP Event Collector (HEC)
+    volumes:
+      - splunk-etc:/opt/splunk/etc
+      - splunk-var:/opt/splunk/var
