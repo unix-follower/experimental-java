@@ -1,4 +1,4 @@
-package org.example.experimental.multithreadingjava;
+package org.example.experimental.multithreading;
 
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.Attributes;
@@ -28,7 +28,7 @@ final class InstrumentedWorkload {
 	private final LongHistogram taskLatency;
 
 	InstrumentedWorkload(OpenTelemetry openTelemetry) {
-		meter = openTelemetry.getMeter("com.example.experimental.multithreadingjava.workload");
+		meter = openTelemetry.getMeter("com.example.experimental.multithreading.workload");
 		submittedTasks = meter.counterBuilder("multithreading.tasks.submitted")
 			.setDescription("Number of submitted tasks")
 			.setUnit("{task}")

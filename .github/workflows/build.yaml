@@ -1,8 +1,6 @@
 name: Build experimental-multithreading-java
 on:
   pull_request:
-    paths:
-      - experimental-multithreading-java/**
     types:
       - opened
       - reopened
@@ -35,6 +33,5 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       - name: Build project
-        working-directory: experimental-multithreading-java
         shell: bash
         run: ./gradlew clean build
