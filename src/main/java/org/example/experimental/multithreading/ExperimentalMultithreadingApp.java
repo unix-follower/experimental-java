@@ -1,4 +1,4 @@
-package org.example.experimental.multithreadingjava;
+package org.example.experimental.multithreading;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -7,11 +7,11 @@ import picocli.CommandLine.Option;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
-@Command(name = "multithreadingjava", mixinStandardHelpOptions = true, version = "1.0.0-SNAPSHOT",
+@Command(name = "multithreading", mixinStandardHelpOptions = true, version = "1.0.0",
         description = "Execute various multithreading scenarios.")
 public class ExperimentalMultithreadingApp implements Callable<Integer> {
     private static final String SERVICE_NAME = "experimental-multithreading-java";
-    private static final String SERVICE_VERSION = "1.0.0-SNAPSHOT";
+    private static final String SERVICE_VERSION = "1.0.0";
 
     private static final Logger LOGGER = Logger.getLogger(ExperimentalMultithreadingApp.class.getName());
 

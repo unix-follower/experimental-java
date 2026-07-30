@@ -6,8 +6,8 @@ plugins {
     id "checkstyle"
 }
 
-group = 'com.example'
-version = '1.0.0-SNAPSHOT'
+group = 'com.example.experimental'
+version = '1.0.0'
 
 java {
 	toolchain {
@@ -33,7 +33,7 @@ dependencies {
 }
 
 application {
-	mainClass = 'com.example.experimental.multithreadingjava.ExperimentalMultithreadingApp'
+	mainClass = 'com.example.experimental.multithreading.ExperimentalMultithreadingApp'
 }
 
 pmd {
