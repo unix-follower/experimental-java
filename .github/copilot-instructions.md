@@ -10,7 +10,7 @@ This repo contains two unrelated things, do not conflate them:
   setting in `build.gradle`, which still points at the old `com.example.experimental.multithreading` package —
   check both when wiring up a new entry point).
 - **`examples/`** — standalone Java demos (`chemistry`, `class_loader_app`) built manually with `javac`/`jar`,
-  *not* part of the Gradle build. See `examples/README.md` for the exact `javac`/`jar`/`java --module-path`
+  *not* part of the Gradle build. See `../examples/class_loader_app/README.md` for the exact `javac`/`jar`/`java --module-path`
   invocations used to compile and run each demo (plain classpath vs. JPMS module variants).
 
 ## Build, test, lint
