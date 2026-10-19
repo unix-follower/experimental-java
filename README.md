@@ -7,6 +7,16 @@
 ./gradlew clean build
 ls ~/.gradle/caches/modules-2/files-2.1/
 ```
+### Decompile
+```bash
+javap -p -v build/classes/java/main/org/example/experimental/multithreading/RateLimiterWithThreadInterruptApp.class > build/tmp/RateLimiterWithThreadInterruptApp.class.txt
+```
+### Diagnostic command requests
+```bash
+jps
+jcmd 83087 GC.heap_info
+jcmd 83087 GC.class_histogram
+```
 
 ## ExperimentalMultithreadingApp
 ### Prerequisites:
@@ -19,13 +29,8 @@ export OTEL_EXPORTER_OTLP_ENDPOINT="http://localhost:4317"
 java --module-path build/libs/lib:build/libs/experimental-java-1.0.0.jar \
   --module experimental.java/org.example.experimental.multithreading.RateLimiterWithThreadInterruptApp
 ```
-### Decompile
+## DaemonThreadApp
 ```bash
-javap -p -v build/classes/java/main/org/example/experimental/multithreading/RateLimiterWithThreadInterruptApp.class > build/tmp/RateLimiterWithThreadInterruptApp.class.txt
-```
-### Diagnostic command requests
-```bash
-jps
-jcmd 83087 GC.heap_info
-jcmd 83087 GC.class_histogram
+java --module-path build/libs/lib:build/libs/experimental-java-1.0.0.jar \
+  --module experimental.java/org.example.experimental.multithreading.DaemonThreadApp
 ```
