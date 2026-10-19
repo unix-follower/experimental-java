@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 
 public class SetNullability {
+    private SetNullability() {
+    }
+
     @SuppressWarnings({"java:S4030", "java:S106", "MismatchedQueryAndUpdateOfCollection"})
     static void main() {
         var strHashSet = new HashSet<String>();

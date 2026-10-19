@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class SetEqualsHashCodeAgainstByteArray {
+    private SetEqualsHashCodeAgainstByteArray() {
+    }
+
     @SuppressWarnings({"java:S106"})
     static void main() {
         final String msg = "Hello, world!";

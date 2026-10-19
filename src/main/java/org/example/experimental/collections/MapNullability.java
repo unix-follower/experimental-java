@@ -4,7 +4,11 @@ import java.util.LinkedHashMap;
 import java.util.TreeMap;
 
 public class MapNullability {
-    @SuppressWarnings({"java:S4030", "java:S106", "MismatchedQueryAndUpdateOfCollection"})
+    private MapNullability() {
+    }
+
+    @SuppressWarnings({
+            "java:S4030", "java:S106", "MismatchedQueryAndUpdateOfCollection", "PMD.AvoidCatchingGenericException"})
     static void main() {
         var strLinkedHashMap = new LinkedHashMap<String, Integer>();
         strLinkedHashMap.put("1", null);

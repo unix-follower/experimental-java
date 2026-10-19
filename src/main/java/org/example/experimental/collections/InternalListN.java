@@ -5,6 +5,9 @@ package org.example.experimental.collections;
 import java.util.List;
 
 public class InternalListN {
+    private InternalListN() {
+    }
+
     static void main() {
         List<Integer> list = List.of(1, 2, 3, 4, 5); // returns ImmutableCollections>ListN
 
