@@ -1,4 +1,4 @@
-package org.example.experimental.multithreading;
+package org.example.experimental.multithreading.ratelimiter;
 
 import java.io.IOException;
 import java.util.logging.Level;

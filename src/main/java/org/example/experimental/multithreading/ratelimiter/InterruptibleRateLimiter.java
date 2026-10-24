@@ -1,4 +1,4 @@
-package org.example.experimental.multithreading;
+package org.example.experimental.multithreading.ratelimiter;
 
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;

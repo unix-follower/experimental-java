@@ -1,4 +1,4 @@
-package org.example.experimental.multithreading;
+package org.example.experimental.multithreading.ratelimiter;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
