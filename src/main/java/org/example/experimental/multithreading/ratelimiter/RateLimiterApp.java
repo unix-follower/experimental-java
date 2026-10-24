@@ -1,11 +1,15 @@
-package org.example.experimental.multithreading;
+package org.example.experimental.multithreading.ratelimiter;
 
 import java.util.Random;
+import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+/**
+ * <a href="https://java-design-patterns.com/patterns/rate-limiting-pattern/">Inspired by</a>
+ */
 public final class RateLimiterApp {
     private static final Logger LOGGER = Logger.getLogger(RateLimiterApp.class.getName());
 
@@ -36,6 +40,10 @@ public final class RateLimiterApp {
             }
         }
         LOGGER.info("Outside of the try block");
+
+        LOGGER.info("Press ENTER to continue...");
+        final var scanner = new Scanner(System.in);
+        scanner.nextLine();
     }
 
     private static Runnable createClientTask(

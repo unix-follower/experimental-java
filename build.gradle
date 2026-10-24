@@ -6,12 +6,12 @@ plugins {
     id "checkstyle"
 }
 
-group = 'com.example.experimental'
+group = 'org.example.experimental'
 version = '1.0.0'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(26)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -24,11 +24,17 @@ ext {
 }
 
 dependencies {
+    // https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-bom
     implementation platform("io.opentelemetry:opentelemetry-bom:${openTelemetryVersion}")
     implementation("io.opentelemetry:opentelemetry-api")
     implementation 'io.opentelemetry:opentelemetry-sdk'
     implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+    // https://mvnrepository.com/artifact/info.picocli/picocli
     implementation 'info.picocli:picocli:4.7.7'
+    // Source: https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+    implementation 'org.slf4j:slf4j-api:2.0.20'
+    // Source: https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    implementation 'ch.qos.logback:logback-classic:1.6.5'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 

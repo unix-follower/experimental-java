@@ -1,4 +1,4 @@
-package org.example.experimental.multithreading;
+package org.example.experimental.multithreading.ratelimiter;
 
 public class RateLimitException extends RuntimeException {
     private final long retryAfterMillis;
