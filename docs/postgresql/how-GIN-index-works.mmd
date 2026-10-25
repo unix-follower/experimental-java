@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant App as Application
+    participant PG as PostgreSQL Query Executor
+    participant Parser as FTS Parser/Dictionary
+    participant GIN as GIN Index
+    participant Heap as Table (Heap)
+
+    App->>PG: Submit full-text search query (e.g., WHERE tsvector_column @@ tsquery)
+    PG->>Parser: Parse tsquery, extract search lexemes
+    Parser-->>PG: Return lexemes (normalized search terms)
+    PG->>GIN: Lookup lexemes in GIN index
+    GIN-->>PG: Return list of matching row pointers (TIDs) for each lexeme
+    PG->>PG: Intersect/union TID lists as per tsquery logic (AND/OR/NOT)
+    loop For each matching TID
+        PG->>Heap: Fetch row from heap using TID
+        Heap-->>PG: Return row data
+        PG->>PG: Recheck row if necessary (e.g., for phrase search or ranking)
+    end
+    PG-->>App: Return result set (matching rows)

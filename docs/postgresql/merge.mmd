@@ -1,0 +1,28 @@
+sequenceDiagram
+    participant Client
+    participant PostgreSQL
+    participant TargetTable
+    participant SourceTable
+
+    Client->>PostgreSQL: Executes MERGE command
+    PostgreSQL->>SourceTable: Reads source rows
+    PostgreSQL->>TargetTable: Reads target rows
+
+    alt MATCHED (Source row matches Target row)
+        PostgreSQL->>TargetTable: Executes UPDATE (if specified)
+        PostgreSQL->>TargetTable: Executes DELETE (if specified)
+    else NOT MATCHED BY TARGET (Source row does not match Target row)
+        PostgreSQL->>TargetTable: Executes INSERT (if specified)
+        alt INSERT ON CONFLICT DO UPDATE
+            PostgreSQL->>TargetTable: If conflict, executes UPDATE
+        else INSERT ON CONFLICT DO NOTHING
+            PostgreSQL->>TargetTable: If conflict, skips insert
+        end
+    end
+
+    alt NOT MATCHED BY SOURCE (Target row does not match Source row)
+        PostgreSQL->>TargetTable: Executes DELETE (if specified)
+        PostgreSQL->>TargetTable: Executes UPDATE (if specified)
+    end
+
+    Client->>PostgreSQL: Receives result (affected rows)
