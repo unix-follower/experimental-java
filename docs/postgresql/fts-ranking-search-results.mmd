@@ -1,0 +1,26 @@
+sequenceDiagram
+    participant App as Application
+    participant PG as PostgreSQL Query Executor
+    participant Parser as FTS Parser/Dictionary
+    participant GIN as GIN Index
+    participant Heap as Table (Heap)
+    participant Ranker as Ranking/Highlighting Engine
+
+    App->>PG: Submit full-text search query (e.g., SELECT ts_headline(...), ts_rank(...) WHERE tsvector_column @@ tsquery)
+    PG->>Parser: Parse tsquery, extract search lexemes
+    Parser-->>PG: Return lexemes
+    PG->>GIN: Lookup lexemes in GIN index
+    GIN-->>PG: Return matching row pointers (TIDs)
+    PG->>PG: Intersect/union TID lists as per tsquery logic
+
+    loop For each matching TID
+        PG->>Heap: Fetch row from heap using TID
+        Heap-->>PG: Return row data
+        PG->>Ranker: Compute rank with ts_rank(tsvector, tsquery)
+        Ranker-->>PG: Return rank score
+        PG->>Ranker: Generate snippet with ts_headline(text, tsquery, options)
+        Note right of Ranker: Options:<br/>MinWords, MaxWords,<br/>ShortWord, MaxFragments,<br/>StartSel, StopSel,<br/>FragmentDelimiter
+        Ranker-->>PG: Return highlighted snippet
+    end
+
+    PG-->>App: Return ranked and highlighted results

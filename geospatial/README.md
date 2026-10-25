@@ -4,7 +4,7 @@
 brew install graphviz
 # Execute at repo root location
 export DATA_DIR="$(pwd)/data/"
-export OUTPUT_DIR="${DATA_DIR}geospatial/out/"
+export OUTPUT_DIR="${DATA_DIR}out/"
 mkdir -p $OUTPUT_DIR
 ```
 ## Commands cheat-sheet
