@@ -1,0 +1,114 @@
+plugins {
+    id "application"
+    id "java"
+    id "jacoco"
+    id "pmd"
+    id "checkstyle"
+}
+
+group = 'org.example.experimental'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(project(":db:stock-market-db"))
+
+    // https://mvnrepository.com/artifact/org.postgresql/postgresql
+    implementation("org.postgresql:postgresql:${providers.gradleProperty("postgresqlVersion").get()}")
+    // https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core
+    implementation("org.hibernate.orm:hibernate-core:${providers.gradleProperty("hibernateCoreVersion").get()}")
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+application {
+    mainClass = 'org.example.experimental.db.StockMarketHibernateApp'
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+                'Main-Class': 'org.example.experimental.db.StockMarketHibernateApp'
+        )
+    }
+}
+
+tasks.register('copyDependencies', Copy) {
+    from configurations.runtimeClasspath
+    into layout.buildDirectory.dir('libs/lib')
+}
+
+pmd {
+    ignoreFailures = false
+    ruleSets = [] // Disable default rulesets
+    ruleSetFiles = files("../../config/pmd-ruleset.xml")
+}
+
+checkstyle {
+    configFile = file("../../config/checkstyle.xml")
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        xml.required = false
+        csv.required = false
+        html.required = true
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.8
+            }
+        }
+
+        rule {
+            enabled = false
+            element = "CLASS"
+
+            limit {
+                counter = "LINE"
+                value = "TOTALCOUNT"
+                maximum = 0.8
+            }
+        }
+    }
+}
+
+tasks.named("test") {
+    useJUnitPlatform()
+}
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+tasks.withType(Pmd) {
+    reports {
+        xml.required = true
+        html.required = true
+        maxFailures = 1
+    }
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.required = true
+        html.required = true
+        maxWarnings = 1
+        maxErrors = 1
+    }
+    exclude '**/module-info.java'
+}

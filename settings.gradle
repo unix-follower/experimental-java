@@ -1,2 +1,4 @@
-rootProject.name = 'experimental-java'
-include 'geospatial:by-gomel-analysis'
+rootProject.name = "experimental-java"
+include "geospatial:by-gomel-analysis"
+include "db:hibernate"
+include "db:stock-market-db"
