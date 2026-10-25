@@ -1,0 +1,125 @@
+plugins {
+  id "application"
+  id "java"
+  id "jacoco"
+  id "pmd"
+  id "checkstyle"
+}
+
+group = 'org.example.geospatialanalysis'
+version = '1.0.0'
+
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(25)
+  }
+}
+
+repositories {
+  mavenCentral()
+}
+
+ext {
+  openTelemetryVersion = '1.67.0'
+}
+
+dependencies {
+  // https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-bom
+  implementation platform("io.opentelemetry:opentelemetry-bom:${openTelemetryVersion}")
+  implementation("io.opentelemetry:opentelemetry-api")
+  implementation 'io.opentelemetry:opentelemetry-sdk'
+  implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+  // https://mvnrepository.com/artifact/info.picocli/picocli
+  implementation 'info.picocli:picocli:4.7.7'
+  // Source: https://mvnrepository.com/artifact/org.slf4j/slf4j-api
+  implementation 'org.slf4j:slf4j-api:2.0.20'
+  // Source: https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+  implementation 'ch.qos.logback:logback-classic:1.6.5'
+  // Source: https://mvnrepository.com/artifact/com.google.guava/guava-bom
+  implementation(platform("com.google.guava:guava-bom:33.7.2-jre"))
+  // Source: https://mvnrepository.com/artifact/tools.jackson/jackson-bom
+  implementation(platform("tools.jackson:jackson-bom:3.2.3"))
+  // Source: https://mvnrepository.com/artifact/tools.jackson.core/jackson-databind
+  implementation("tools.jackson.core:jackson-databind")
+  // Source: https://mvnrepository.com/artifact/org.jgrapht/jgrapht-core
+  implementation("org.jgrapht:jgrapht-core:1.5.3")
+  // Source: https://mvnrepository.com/artifact/org.jgrapht/jgrapht-io
+  implementation("org.jgrapht:jgrapht-io:1.5.3")
+  testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+application {
+  mainClass = 'org.example.geospatialanalysis.GeospatialAnalysisApp'
+}
+
+tasks.register('copyDependencies', Copy) {
+  from configurations.runtimeClasspath
+  into layout.buildDirectory.dir('libs/lib')
+}
+
+pmd {
+  ignoreFailures = false
+  ruleSets = [] // Disable default rulesets
+  ruleSetFiles = files("../../config/pmd-ruleset.xml")
+}
+
+checkstyle {
+  configFile = file("../../config/checkstyle.xml")
+}
+
+jacocoTestReport {
+  dependsOn test
+
+  reports {
+    xml.required = false
+    csv.required = false
+    html.required = true
+  }
+}
+
+jacocoTestCoverageVerification {
+  violationRules {
+    rule {
+      limit {
+        minimum = 0.8
+      }
+    }
+
+    rule {
+      enabled = false
+      element = "CLASS"
+
+      limit {
+        counter = "LINE"
+        value = "TOTALCOUNT"
+        maximum = 0.8
+      }
+    }
+  }
+}
+
+tasks.named("test") {
+  useJUnitPlatform()
+}
+
+test {
+  finalizedBy jacocoTestReport
+}
+
+tasks.withType(Pmd) {
+  reports {
+    xml.required = true
+    html.required = true
+    maxFailures = 1
+  }
+}
+
+tasks.withType(Checkstyle) {
+  reports {
+    xml.required = true
+    html.required = true
+    maxWarnings = 1
+    maxErrors = 1
+  }
+  exclude '**/module-info.java'
+}

@@ -1,1 +1,2 @@
 rootProject.name = 'experimental-java'
+include 'geospatial:by-gomel-analysis'
