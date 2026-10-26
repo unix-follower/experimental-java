@@ -6,7 +6,7 @@ plugins {
     id "checkstyle"
 }
 
-group = 'org.example.experimental'
+group = 'org.example.experiments'
 version = '1.0.0'
 
 java {
@@ -39,13 +39,13 @@ dependencies {
 }
 
 application {
-    mainClass = 'org.example.experimental.multithreading.ExperimentalMultithreadingApp'
+    mainClass = 'org.example.experiments.multithreading.ExperimentsMultithreadingApp'
 }
 
 tasks.jar {
     manifest {
         attributes(
-                'Main-Class': 'org.example.experimental.multithreading.ThreadInterruptApp'
+                'Main-Class': 'org.example.experiments.multithreading.ThreadInterruptApp'
         )
     }
 }

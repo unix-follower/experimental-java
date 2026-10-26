@@ -1,13 +1,13 @@
-# Copilot instructions for experimental-java
+# Copilot instructions for experiments-java
 
 ## Repository layout
 
 This repo contains two unrelated things, do not conflate them:
 
 - **Root Gradle project** (`src/main/java/...`) — the only part built/tested by Gradle. Currently a single
-  application: `ExperimentalMultithreadingApp` under package `org.example.experimental.multithreading`
-  (note: differs from the Gradle `group`, `com.example.experimental`, and from the `application.mainClass`
-  setting in `build.gradle`, which still points at the old `com.example.experimental.multithreading` package —
+  application: `ExperimentsMultithreadingApp` under package `org.example.experiments.multithreading`
+  (note: differs from the Gradle `group`, `com.example.experiments`, and from the `application.mainClass`
+  setting in `build.gradle`, which still points at the old `com.example.experiments.multithreading` package —
   check both when wiring up a new entry point).
 - **`examples/`** — standalone Java demos (`chemistry`, `class_loader_app`) built manually with `javac`/`jar`,
   *not* part of the Gradle build. See `../examples/class_loader_app/README.md` for the exact `javac`/`jar`/`java --module-path`
@@ -20,8 +20,8 @@ Requires JDK 26 (configured via Gradle toolchain, auto-provisioned by Gradle).
 ```bash
 ./gradlew build              # compile + test + checkstyle + pmd + jacoco
 ./gradlew test               # run tests only (JUnit Platform)
-./gradlew test --tests "org.example.experimental.multithreading.SomeTest"   # single test class
-./gradlew test --tests "org.example.experimental.multithreading.SomeTest.someMethod"  # single test method
+./gradlew test --tests "org.example.experiments.multithreading.SomeTest"   # single test class
+./gradlew test --tests "org.example.experiments.multithreading.SomeTest.someMethod"  # single test method
 ./gradlew checkstyleMain checkstyleTest   # style check (config/checkstyle.xml)
 ./gradlew pmdMain pmdTest                 # static analysis (config/pmd-ruleset.xml)
 ./gradlew jacocoTestReport                # coverage report (html at build/reports/jacoco)
@@ -42,6 +42,6 @@ stack for manual verification lives in `docker/docker-compose.yml` (cheat sheet 
 ## Conventions
 
 - Indentation is tabs in some existing files (`OpenTelemetrySupport.java`) and spaces in others
-  (`ExperimentalMultithreadingApp.java`); `.editorconfig` specifies 4-space indent — follow it for new code.
+  (`ExperimentsMultithreadingApp.java`); `.editorconfig` specifies 4-space indent — follow it for new code.
 - CLI entry points use picocli (`@Command`/`@Option`), with a static `main()` (no-arg, picocli handles args
   via `CommandLine`) rather than the usual `main(String[] args)`.

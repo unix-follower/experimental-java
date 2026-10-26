@@ -1,11 +1,12 @@
 plugins {
     id "java"
+    id("io.spring.dependency-management")
     id "jacoco"
     id "pmd"
     id "checkstyle"
 }
 
-group = 'org.example.experimental'
+group = 'org.example.experiments.db.stock-market'
 version = '1.0.0'
 
 java {

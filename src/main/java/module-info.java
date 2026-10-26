@@ -1,4 +1,4 @@
-open module experimental.java {
+open module experiments.java {
     requires java.logging;
 
     requires io.opentelemetry.api;

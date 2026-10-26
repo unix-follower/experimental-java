@@ -1,0 +1,150 @@
+plugins {
+    id "java"
+    id "jacoco"
+    id "pmd"
+    id "checkstyle"
+    id "org.springframework.boot"
+    id "io.spring.dependency-management"
+}
+
+group = 'org.example.experiments.spring-boot-servlet-server'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(project(":db:stock-market-db"))
+    implementation(project(":db:chemistry-pubchem-db"))
+
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+    implementation "org.springframework.boot:spring-boot-jdbc"
+    implementation "org.springframework.boot:spring-boot-hibernate"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "io.micrometer:micrometer-tracing-bridge-brave"
+    implementation "org.liquibase:liquibase-core"
+    implementation "org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j"
+    implementation "org.springframework.cloud:spring-cloud-starter-config"
+    // https://mvnrepository.com/artifact/org.zalando/logbook-spring-boot-starter
+    implementation "org.zalando:logbook-spring-boot-starter:${zalandoLogbookVersion}"
+    implementation "org.zalando:logbook-servlet:${zalandoLogbookVersion}"
+    // https://mvnrepository.com/artifact/net.logstash.logback/logstash-logback-encoder
+    implementation "net.logstash.logback:logstash-logback-encoder:8.1"
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
+    runtimeOnly "io.micrometer:micrometer-registry-prometheus"
+    runtimeOnly "org.postgresql:postgresql"
+    implementation("io.opentelemetry.instrumentation:opentelemetry-spring-boot-starter")
+    // https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-extension-trace-propagators
+    implementation 'io.opentelemetry:opentelemetry-extension-trace-propagators'
+    // https://mvnrepository.com/artifact/org.openscience.cdk/cdk-bundle
+    implementation "org.openscience.cdk:cdk-bundle:${cdkBundleVersion}"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation "org.springframework.security:spring-security-test"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
+}
+
+dependencyManagement {
+    imports {
+        // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies
+        mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        // https://mvnrepository.com/artifact/org.springframework.ai/spring-ai-bom
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+        // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        // https://mvnrepository.com/artifact/io.opentelemetry.instrumentation/opentelemetry-instrumentation-bom
+        mavenBom("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom:${opentelemetryInstrumentationBomVersion}")
+    }
+}
+
+tasks.named("bootBuildImage") {
+    runImage = "paketobuildpacks/ubuntu-noble-run-base:latest"
+}
+
+springBoot {
+    buildInfo {
+    }
+}
+
+pmd {
+    ignoreFailures = false
+    ruleSets = [] // Disable default rulesets
+    ruleSetFiles = files("../config/pmd-ruleset.xml")
+}
+
+checkstyle {
+    configFile = file("../config/checkstyle.xml")
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        xml.required = false
+        csv.required = false
+        html.required = true
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "org/example/experiments/sbservlet/config/**",
+            ])
+        })
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.8
+            }
+        }
+
+        rule {
+            enabled = false
+            element = "CLASS"
+
+            limit {
+                counter = "LINE"
+                value = "TOTALCOUNT"
+                maximum = 0.8
+            }
+        }
+    }
+}
+
+tasks.named("test") {
+    useJUnitPlatform()
+}
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+tasks.withType(Pmd) {
+    reports {
+        xml.required = true
+        html.required = true
+        maxFailures = 1
+    }
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.required = true
+        html.required = true
+        maxWarnings = 1
+        maxErrors = 1
+    }
+    exclude '**/module-info.java'
+}

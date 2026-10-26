@@ -3,8 +3,18 @@ receivers:
     protocols:
       grpc:
         endpoint: 0.0.0.0:4317
+#        endpoint: ${env:OTEL_COLLECTOR_HOST}:${env:OTEL_COLLECTOR_PORT_GRPC}
       http:
         endpoint: 0.0.0.0:4318
+#        endpoint: ${env:OTEL_COLLECTOR_HOST}:${env:OTEL_COLLECTOR_PORT_HTTP}
+        include_metadata: true
+        cors:
+            allowed_origins:
+                - "http://*"
+                - "https://*"
+            allow_methods: [GET,POST,PUT,PATCH,DELETE,OPTIONS]
+            allowed_headers: "*"
+            max_age: 3600
 
 processors:
   batch:
@@ -13,6 +23,11 @@ exporters:
   # Debug Exporter: Prints telemetry directly to the container logs
   debug:
     verbosity: basic # Options: silent, basic, normal, detailed
+
+  otlp:
+      endpoint: jaeger:14250
+      tls:
+          insecure: true
 
   # Prometheus Exporter: Exposes metrics for Prometheus to scrape
   prometheus:
@@ -40,6 +55,13 @@ exporters:
     # Set to true if you are using self-signed SSL certificates on your Splunk instance
     tls:
       insecure_skip_verify: true
+
+extensions:
+    health_check:
+    pprof:
+        endpoint: :1888
+    zpages:
+        endpoint: :55679
 
 service:
   telemetry:

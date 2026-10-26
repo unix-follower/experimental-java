@@ -17,7 +17,7 @@ ls ~/.gradle/caches/modules-2/files-2.1/
 ```bash
 cd geospatial/by-gomel-analysis/build/libs/
 java --module-path lib:by-gomel-analysis-1.0.0.jar \
-  --module by.gomel.analysis.app/org.example.geospatialanalysis.GeospatialAnalysisApp
+  --module by.gomel.analysis.app/org.example.experiments.geospatialanalysis.GeospatialAnalysisApp
 
 neato -n -Tsvg ${OUTPUT_DIR}geospatial/by-gomel-analysis/route.dot -o ${OUTPUT_DIR}geospatial/by-gomel-analysis/route.svg
 dot -Tsvg ${OUTPUT_DIR}geospatial/by-gomel-analysis/route.dot -o ${OUTPUT_DIR}geospatial/by-gomel-analysis/compact-route.svg
