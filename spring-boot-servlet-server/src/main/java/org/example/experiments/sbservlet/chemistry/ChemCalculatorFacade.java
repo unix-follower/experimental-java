@@ -1,0 +1,35 @@
+package org.example.experiments.sbservlet.chemistry;
+
+import org.example.experiments.sbservlet.api.chemistry.model.req.ChemCalculateMolarMassReq;
+import org.example.experiments.sbservlet.api.chemistry.model.req.ChemCalculateMoleReq;
+import org.example.experiments.sbservlet.api.model.resp.CalculatorScalarResponse;
+import org.springframework.stereotype.Component;
+
+@Component
+public final class ChemCalculatorFacade implements ChemCalculatorApiFacade {
+    @Override
+    public CalculatorScalarResponse calculate(ChemCalculateMolarMassReq body) {
+        final var calc = new MolarMassCalc();
+        calc.setStrategy(body.strategy());
+        if (body.formula() != null) {
+            calc.setInputType(Constants.FORMULA_IN_TYPE);
+            return calc.calculate(body.formula());
+        } else {
+            calc.setInputType(Constants.SMILES_IN_TYPE);
+            return calc.calculate(body.smiles());
+        }
+    }
+
+    @Override
+    public CalculatorScalarResponse calculate(ChemCalculateMoleReq body) {
+        final var calc = new MoleCalc();
+        if (body.formula() != null) {
+            calc.setInputType(Constants.FORMULA_IN_TYPE);
+        } else if (body.smiles() != null) {
+            calc.setInputType(Constants.SMILES_IN_TYPE);
+        } else {
+            calc.setInputType(Constants.UNKNOWN_SUBSTANCE);
+        }
+        return calc.calculate(body);
+    }
+}

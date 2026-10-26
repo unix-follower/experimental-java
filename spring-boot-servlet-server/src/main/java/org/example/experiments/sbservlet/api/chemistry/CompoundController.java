@@ -1,0 +1,34 @@
+package org.example.experiments.sbservlet.api.chemistry;
+
+import org.example.experiments.sbservlet.api.ChemistryGraphResponse;
+import org.example.experiments.sbservlet.api.chemistry.model.CompoundSDFDataResponse;
+import org.example.experiments.sbservlet.chemistry.PubChemApiFacade;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class CompoundController implements CompoundApi {
+    private final PubChemApiFacade facade;
+
+    public CompoundController(PubChemApiFacade facade) {
+        this.facade = facade;
+    }
+
+    @Override
+    public ResponseEntity<ChemistryGraphResponse> getCompoundGraphDataByName(String name, int page, int pageSize) {
+        final var graphResponse = facade.getCompoundDataByName(name, page, pageSize);
+        return ResponseEntity.ok(graphResponse);
+    }
+
+    @Override
+    public ResponseEntity<ChemistryGraphResponse> getAllGraphs(int page, int pageSize) {
+        final var graphResponse = facade.getAllGraphs(page, pageSize);
+        return ResponseEntity.ok(graphResponse);
+    }
+
+    @Override
+    public ResponseEntity<CompoundSDFDataResponse> getCompoundSDFDataByCid(long cid) {
+        final var response = facade.getCompoundSDFDataByCid(cid);
+        return ResponseEntity.ok(response);
+    }
+}

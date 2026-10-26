@@ -6,7 +6,7 @@ plugins {
     id "checkstyle"
 }
 
-group = 'org.example.experimental'
+group = 'org.example.experiments.db.hibernate'
 version = '1.0.0'
 
 java {
@@ -30,13 +30,13 @@ dependencies {
 }
 
 application {
-    mainClass = 'org.example.experimental.db.StockMarketHibernateApp'
+    mainClass = 'org.example.experiments.db.StockMarketHibernateApp'
 }
 
 tasks.jar {
     manifest {
         attributes(
-                'Main-Class': 'org.example.experimental.db.StockMarketHibernateApp'
+                'Main-Class': 'org.example.experiments.db.StockMarketHibernateApp'
         )
     }
 }

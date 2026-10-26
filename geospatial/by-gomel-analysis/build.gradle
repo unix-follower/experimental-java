@@ -6,7 +6,7 @@ plugins {
   id "checkstyle"
 }
 
-group = 'org.example.geospatialanalysis'
+group = 'org.example.experiments.geospatial-analysis'
 version = '1.0.0'
 
 java {

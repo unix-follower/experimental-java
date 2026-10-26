@@ -1,5 +1,13 @@
-rootProject.name = "experimental-java"
+pluginManagement {
+    plugins {
+        id "org.springframework.boot" version "4.1.2"
+        id "io.spring.dependency-management" version "1.1.7"
+    }
+}
+
+rootProject.name = "experiments-java"
+
 include "geospatial:by-gomel-analysis"
-include "db:hibernate"
-include "db:stock-market-db"
+include("db:hibernate", "db:stock-market-db", "db:chemistry-pubchem-db")
 include "math-practice"
+include "spring-boot-servlet-server"

@@ -37,7 +37,7 @@ Splunk UI: http://localhost:8000
 # Prometheus queries
 
 ```promql
-{exported_job="experimental-multithreading-java"}
+{exported_job="experiments-multithreading-java"}
 ```
 
 ## Delete

@@ -4,7 +4,7 @@
              version="2.0">
 
     <persistence-unit name="stock-market">
-        <class>org.example.db.stockmarket.Stock</class>
+        <class>org.example.experiments.db.stockmarket.model.Stock</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://192.168.105.8:32000/stock_market" />

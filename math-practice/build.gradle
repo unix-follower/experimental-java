@@ -7,7 +7,7 @@ plugins {
     id("me.champeau.jmh") version "0.7.3"
 }
 
-group = 'org.example.experimental'
+group = 'org.example.experiments.math'
 version = '1.0.0'
 
 java {
@@ -36,19 +36,19 @@ dependencies {
     // Source: https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-generator-annprocess
     jmhImplementation("org.openjdk.jmh:jmh-generator-annprocess:$jmhVersion")
     // Source: https://mvnrepository.com/artifact/org.junit/junit-bom
-    testImplementation(platform("org.junit:junit-bom:6.1.3"))
+    testImplementation(platform("org.junit:junit-bom:${providers.gradleProperty("junitBom").get()}"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 application {
-    mainClass = 'org.example.experimental.math.ExampleApp'
+    mainClass = 'org.example.experiments.math.ExampleApp'
 }
 
 tasks.jar {
     manifest {
         attributes(
-                "Main-Class": "org.example.experimental.math.ExampleApp",
+                "Main-Class": "org.example.experiments.math.ExampleApp",
                 "Build-Jdk-Spec": java.sourceCompatibility,
                 "Implementation-Title": project.name,
                 "Implementation-Version": project.version,

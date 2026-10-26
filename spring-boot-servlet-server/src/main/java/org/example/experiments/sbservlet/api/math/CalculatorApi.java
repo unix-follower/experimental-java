@@ -1,0 +1,35 @@
+package org.example.experiments.sbservlet.api.math;
+
+import org.example.experiments.sbservlet.api.math.model.CalculateCosineReq;
+import org.example.experiments.sbservlet.api.math.model.CalculateHypotenuseReq;
+import org.example.experiments.sbservlet.api.math.model.CalculateMatrixAddReq;
+import org.example.experiments.sbservlet.api.math.model.CalculateRightTriangleReq;
+import org.example.experiments.sbservlet.api.math.model.CalculateSineReq;
+import org.example.experiments.sbservlet.api.math.model.CalculateTanReq;
+import org.example.experiments.sbservlet.api.model.resp.CalculatorMatrixResponse;
+import org.example.experiments.sbservlet.api.model.resp.CalculatorScalarResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@RequestMapping("/api/v1/math/calculator")
+public interface CalculatorApi {
+    @PostMapping(value = "/right-triangle")
+    ResponseEntity<CalculatorScalarResponse> calculate(@RequestBody CalculateRightTriangleReq body);
+
+    @PostMapping(value = "/hypotenuse")
+    ResponseEntity<CalculatorScalarResponse> calculate(@RequestBody CalculateHypotenuseReq body);
+
+    @PostMapping(value = "/linear-algebra/matrix-addition")
+    ResponseEntity<CalculatorMatrixResponse> calculate(@RequestBody CalculateMatrixAddReq body);
+
+    @PostMapping(value = "/trigonometry/cos")
+    ResponseEntity<CalculatorScalarResponse> calculate(@RequestBody CalculateCosineReq body);
+
+    @PostMapping(value = "/trigonometry/sin")
+    ResponseEntity<CalculatorScalarResponse> calculate(@RequestBody CalculateSineReq body);
+
+    @PostMapping(value = "/trigonometry/tan")
+    ResponseEntity<CalculatorScalarResponse> calculate(@RequestBody CalculateTanReq body);
+}

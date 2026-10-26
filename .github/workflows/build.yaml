@@ -1,4 +1,4 @@
-name: Build experimental-multithreading-java
+name: Build experiments-java
 on:
   pull_request:
     types:
