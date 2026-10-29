@@ -196,8 +196,10 @@ public class FailFastVsFailSafeApp {
                     numberMap.put(entry.getKey() + entry.getValue(), entry.getValue() * 2);
                     return entry;
                 })
-                .collect(Collectors.toMap(entry -> entry.getKey() + entry.getValue(), Map.Entry::getValue));
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey() + entry.getValue(), Map.Entry::getValue));
         final String className = numberMap.getClass().getName();
-        System.out.printf("%s: numberMap.size(): %d, results.size(): %d%n", className, numberMap.size(), results.size());
+        System.out.printf("%s: numberMap.size(): %d, results.size(): %d%n",
+                className, numberMap.size(), results.size());
     }
 }

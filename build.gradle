@@ -4,6 +4,7 @@ plugins {
     id "jacoco"
     id "pmd"
     id "checkstyle"
+    id("me.champeau.jmh") version "0.7.3"
 }
 
 group = 'org.example.experiments'
@@ -19,10 +20,6 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    openTelemetryVersion = '1.67.0'
-}
-
 dependencies {
     // https://mvnrepository.com/artifact/io.opentelemetry/opentelemetry-bom
     implementation platform("io.opentelemetry:opentelemetry-bom:${openTelemetryVersion}")
@@ -30,12 +27,18 @@ dependencies {
     implementation 'io.opentelemetry:opentelemetry-sdk'
     implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
     // https://mvnrepository.com/artifact/info.picocli/picocli
-    implementation 'info.picocli:picocli:4.7.7'
+    implementation "info.picocli:picocli:${picocliVersion}"
     // Source: https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    implementation 'org.slf4j:slf4j-api:2.0.20'
+    implementation "org.slf4j:slf4j-api:${slf4jApiVersion}"
     // Source: https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
-    implementation 'ch.qos.logback:logback-classic:1.6.5'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation "ch.qos.logback:logback-classic:${logbackClassicVersion}"
+    // Source: https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-core
+    jmhImplementation("org.openjdk.jmh:jmh-core:${jmhVersion}")
+    // Source: https://mvnrepository.com/artifact/org.openjdk.jmh/jmh-generator-annprocess
+    jmhImplementation("org.openjdk.jmh:jmh-generator-annprocess:${jmhVersion}")
+    testImplementation(platform("org.junit:junit-bom:${junitBomVersion}"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 application {
@@ -120,4 +123,16 @@ tasks.withType(Checkstyle) {
         maxErrors = 1
     }
     exclude '**/module-info.java'
+}
+
+jmh {
+    this.version(jmhVersion)
+    fork.set(1)
+    threads.set(2)
+    warmup.set("1s")
+    warmupIterations.set(2)
+    iterations.set(2)
+    timeOnIteration.set("1s")
+    timeUnit.set("ms")
+    benchmarkMode.set(Set.of("all"))
 }
